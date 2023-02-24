@@ -100,9 +100,9 @@
 							</form>
 
 							<script type="text/javascript">
-								require('dotenv').config();
-								console.log(process.env);
 								function submitForm() {
+									require('dotenv').config();
+									console.log(process.env);
 									const accessToken = process.env.token;
 								  var formData = $("form").serializeArray();
 								  let csv = "";
