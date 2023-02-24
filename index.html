@@ -100,9 +100,12 @@
 							</form>
 
 							<script type="text/javascript">
+								require('dotenv').config();
+
 								function submitForm() {
+									const accessToken = process.env.GITHUB_ACCESS_TOKEN;
 								  var formData = $("form").serializeArray();
-								  let csv = "data:text/csv;charset=utf-8,";
+								  let csv = "";
 
 								  formData.forEach(function(item) {
 								    var value = item.value.replace(/(\r\n|\n|\r)/gm, " "); // Replace newlines with spaces
@@ -115,24 +118,69 @@
 								  csv += "\n";
 
 								  var xhr = new XMLHttpRequest();
-								  xhr.open("POST", "https://api.github.com/repos/ashishjayamohan/create-conference/contents/entries.csv", true);
-								  xhr.setRequestHeader("Authorization", "token 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");
-								  xhr.setRequestHeader("Content-Type", "application/json");
+
+								  // Get the latest commit for the entries.csv file
+								  xhr.open("GET", "https://api.github.com/repos/ashishjayamohan/create-conference/commits?path=entries.csv&per_page=1", true);
+								  xhr.setRequestHeader("Authorization", "token ${accessToken}");
 								  xhr.onload = function() {
-								    if (xhr.status === 201) {
-								      console.log("Entry added successfully!");
+								    if (xhr.status === 200) {
+								      var response = JSON.parse(xhr.responseText);
+								      var sha = response[0].sha; // Get the SHA hash of the latest commit
+								      appendToCsv(sha, csv); // Append the new content to entries.csv
 								    } else {
-								      console.log("Error adding entry: " + xhr.statusText);
+								      console.log("Error getting latest commit: " + xhr.statusText);
 								    }
 								  };
+								  xhr.send();
 
-								  var content = {
-								    message: "Add new entry",
-								    content: btoa(csv),
-								    branch: "main"
-								  };
+								  function appendToCsv(sha, csv) {
+								    var xhr2 = new XMLHttpRequest();
 
-								  xhr.send(JSON.stringify(content));
+								    // Get the existing content of the entries.csv file
+								    xhr2.open("GET", "https://api.github.com/repos/ashishjayamohan/create-conference/contents/entries.csv", true);
+								    xhr2.setRequestHeader("Authorization", "token ${accessToken}");
+								    xhr2.onload = function() {
+								      if (xhr2.status === 200) {
+								        var response = JSON.parse(xhr2.responseText);
+								        var content = response.content;
+
+								        // Decode the base64-encoded content
+								        var decoded = atob(content);
+
+								        // Append the new content to the existing content
+								        var newContent = decoded + csv;
+
+								        // Encode the new content as base64
+								        var encoded = btoa(newContent);
+
+								        var xhr3 = new XMLHttpRequest();
+
+								        // Update the content of entries.csv with the new content
+								        xhr3.open("PUT", "https://api.github.com/repos/ashishjayamohan/create-conference/contents/entries.csv", true);
+								        xhr3.setRequestHeader("Authorization", "token ${accessToken}");
+								        xhr3.setRequestHeader("Content-Type", "application/json");
+								        xhr3.onload = function() {
+								          if (xhr3.status === 200 || xhr3.status === 201) {
+								            console.log("Entry added successfully!");
+								          } else {
+								            console.log("Error adding entry: " + xhr3.statusText);
+								          }
+								        };
+
+								        var updateContent = {
+								          message: "Add new entry",
+								          content: encoded,
+								          branch: "main",
+								          sha: sha
+								        };
+
+								        xhr3.send(JSON.stringify(updateContent));
+								      } else {
+								        console.log("Error getting existing content: " + xhr2.statusText);
+								      }
+								    };
+								    xhr2.send();
+								  }
 
 
 
