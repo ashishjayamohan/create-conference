@@ -101,7 +101,7 @@
 
 							<script type="text/javascript">
 								require('dotenv').config();
-
+								console.log(process.env);
 								function submitForm() {
 									const accessToken = process.env.token;
 								  var formData = $("form").serializeArray();
