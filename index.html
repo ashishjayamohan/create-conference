@@ -103,7 +103,7 @@
 								require('dotenv').config();
 
 								function submitForm() {
-									const accessToken = process.env.GITHUB_ACCESS_TOKEN;
+									const accessToken = process.env.token;
 								  var formData = $("form").serializeArray();
 								  let csv = "";
 
