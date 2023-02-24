@@ -78,7 +78,7 @@
 				<!-- Seven -->
 					<section class="wrapper style1 align-center">
 						<div class="inner medium">
-							<h2>Get in touch</h2>
+							<h2>Register Now</h2>
 							<form method="post" action="#">
 								<div class="fields">
 									<div class="field half">
@@ -95,10 +95,73 @@
 									</div>
 								</div>
 								<ul class="actions special">
-									<li><input type="submit" name="submit" id="submit" value="Send Message" /></li>
+									<li><input type="submit" name="submit" id="submit" onclick="submitForm(event)" value="Send Message" /></li>
 								</ul>
 							</form>
 
+							<script type="text/javascript">
+								function submitForm() {
+								  var formData = $("form").serializeArray();
+								  let csv = "data:text/csv;charset=utf-8,";
+
+								  formData.forEach(function(item) {
+								    var value = item.value.replace(/(\r\n|\n|\r)/gm, " "); // Replace newlines with spaces
+								    value = value.replace(/,/g, ""); // Remove commas
+								    value = value.replace(/"/g, ""); // Remove double quotes
+								    csv += '"' + value + '",'; // Surround each value with double quotes
+								  });
+
+								  csv = csv.slice(0, -1); // Remove last comma
+								  csv += "\n";
+
+								  var xhr = new XMLHttpRequest();
+								  xhr.open("POST", "https://api.github.com/repos/ashishjayamohan/create-conference/contents/entries.csv", true);
+								  xhr.setRequestHeader("Authorization", "token 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");
+								  xhr.setRequestHeader("Content-Type", "application/json");
+								  xhr.onload = function() {
+								    if (xhr.status === 201) {
+								      console.log("Entry added successfully!");
+								    } else {
+								      console.log("Error adding entry: " + xhr.statusText);
+								    }
+								  };
+
+								  var content = {
+								    message: "Add new entry",
+								    content: btoa(csv),
+								    branch: "main"
+								  };
+
+								  xhr.send(JSON.stringify(content));
+
+
+
+									// event.preventDefault(); // prevent default form submission behavior
+							        // var formData = $("form").serializeArray(); // retrieve form data
+							        // var values = formData.map(function(item) {
+							        //     return item.value; // extract values from form data
+							        // });
+							        // var csv = values.join(","); // join values with commas
+							        // $.ajax({
+							        //     url: "https://api.github.com/repos/ashishjayamohan/create-conference/contents/entries.csv", // replace with your Github repository URL
+							        //     type: "POST",
+							        //     headers: {
+							        //         Authorization: "Token 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" // replace with your Github access token
+							        //     },
+							        //     data: JSON.stringify({
+							        //         message: "Add new entry", // commit message
+							        //         content: btoa(csv + "\n"), // encode CSV data as base64 and append newline character
+							        //         sha: "" // set to empty string for new file, or the SHA of the existing file to update it
+							        //     })
+							        // }).done(function(response) {
+							        //     console.log(response); // log response from Github API
+							        //     // TODO: add success message or redirect to thank-you page
+							        // }).fail(function(error) {
+							        //     console.log(error); // log error from Github API
+							        //     // TODO: add error message or alert
+							        // });
+								}
+							</script>
 						</div>
 					</section>
 
@@ -106,13 +169,11 @@
 					<footer class="wrapper style1 align-center">
 						<div class="inner">
 							<ul class="icons">
-								<li><a href="#" class="icon brands style2 fa-twitter"><span class="label">Twitter</span></a></li>
 								<li><a href="#" class="icon brands style2 fa-facebook-f"><span class="label">Facebook</span></a></li>
 								<li><a href="#" class="icon brands style2 fa-instagram"><span class="label">Instagram</span></a></li>
-								<li><a href="#" class="icon brands style2 fa-linkedin-in"><span class="label">LinkedIn</span></a></li>
 								<li><a href="#" class="icon style2 fa-envelope"><span class="label">Email</span></a></li>
 							</ul>
-							<p>&copy; Untitled. Design: <a href="https://html5up.net">AJ</a>.</p>
+							<p>&copy; Create Conference 2023. Design: <a href="https://ashishjayamohan.github.io/">Ashish Jayamohan</a>.</p>
 						</div>
 					</footer>
 
