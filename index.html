@@ -23,7 +23,7 @@
 							<h1>Create Conference 2023: Renewed</h1>
 							<p class="minor">“Do not lie to one another, since you have put off the old self with its practices 10 and have put on the new self. You are being renewed in knowledge according to the image of your Creator.” (Colossians 3:9-10)</p>
 							<ul class="actions stacked">
-								<li><a href="#first" class="button large wide smooth-scroll-middle">Facebook</a></li>
+								<li><a href="#first" class="button large wide smooth-scroll-middle">Our Speakers</a></li>
 							</ul>
 						</div>
 						<div class="image">
@@ -80,136 +80,7 @@
 						<div class="inner medium">
 							<h2>Register Now</h2>
 							<form method="post" action="#">
-								<div class="fields">
-									<div class="field half">
-										<label for="name">Name</label>
-										<input type="text" name="name" id="name" value="" />
-									</div>
-									<div class="field half">
-										<label for="email">Email</label>
-										<input type="email" name="email" id="email" value="" />
-									</div>
-									<div class="field">
-										<label for="message">Message</label>
-										<textarea name="message" id="message" rows="6"></textarea>
-									</div>
-								</div>
-								<ul class="actions special">
-									<li><input type="submit" name="submit" id="submit" onclick="submitForm(event)" value="Send Message" /></li>
-								</ul>
-							</form>
-
-							<script type="text/javascript">
-								function submitForm() {
-									require('dotenv').config();
-									console.log(process.env);
-									const accessToken = process.env.token;
-								  var formData = $("form").serializeArray();
-								  let csv = "";
-
-								  formData.forEach(function(item) {
-								    var value = item.value.replace(/(\r\n|\n|\r)/gm, " "); // Replace newlines with spaces
-								    value = value.replace(/,/g, ""); // Remove commas
-								    value = value.replace(/"/g, ""); // Remove double quotes
-								    csv += '"' + value + '",'; // Surround each value with double quotes
-								  });
-
-								  csv = csv.slice(0, -1); // Remove last comma
-								  csv += "\n";
-
-								  var xhr = new XMLHttpRequest();
-
-								  // Get the latest commit for the entries.csv file
-								  xhr.open("GET", "https://api.github.com/repos/ashishjayamohan/create-conference/commits?path=entries.csv&per_page=1", true);
-								  xhr.setRequestHeader("Authorization", "token ${accessToken}");
-								  xhr.onload = function() {
-								    if (xhr.status === 200) {
-								      var response = JSON.parse(xhr.responseText);
-								      var sha = response[0].sha; // Get the SHA hash of the latest commit
-								      appendToCsv(sha, csv); // Append the new content to entries.csv
-								    } else {
-								      console.log("Error getting latest commit: " + xhr.statusText);
-								    }
-								  };
-								  xhr.send();
-
-								  function appendToCsv(sha, csv) {
-								    var xhr2 = new XMLHttpRequest();
-
-								    // Get the existing content of the entries.csv file
-								    xhr2.open("GET", "https://api.github.com/repos/ashishjayamohan/create-conference/contents/entries.csv", true);
-								    xhr2.setRequestHeader("Authorization", "token ${accessToken}");
-								    xhr2.onload = function() {
-								      if (xhr2.status === 200) {
-								        var response = JSON.parse(xhr2.responseText);
-								        var content = response.content;
-
-								        // Decode the base64-encoded content
-								        var decoded = atob(content);
-
-								        // Append the new content to the existing content
-								        var newContent = decoded + csv;
-
-								        // Encode the new content as base64
-								        var encoded = btoa(newContent);
-
-								        var xhr3 = new XMLHttpRequest();
-
-								        // Update the content of entries.csv with the new content
-								        xhr3.open("PUT", "https://api.github.com/repos/ashishjayamohan/create-conference/contents/entries.csv", true);
-								        xhr3.setRequestHeader("Authorization", "token ${accessToken}");
-								        xhr3.setRequestHeader("Content-Type", "application/json");
-								        xhr3.onload = function() {
-								          if (xhr3.status === 200 || xhr3.status === 201) {
-								            console.log("Entry added successfully!");
-								          } else {
-								            console.log("Error adding entry: " + xhr3.statusText);
-								          }
-								        };
-
-								        var updateContent = {
-								          message: "Add new entry",
-								          content: encoded,
-								          branch: "main",
-								          sha: sha
-								        };
-
-								        xhr3.send(JSON.stringify(updateContent));
-								      } else {
-								        console.log("Error getting existing content: " + xhr2.statusText);
-								      }
-								    };
-								    xhr2.send();
-								  }
-
-
-
-									// event.preventDefault(); // prevent default form submission behavior
-							        // var formData = $("form").serializeArray(); // retrieve form data
-							        // var values = formData.map(function(item) {
-							        //     return item.value; // extract values from form data
-							        // });
-							        // var csv = values.join(","); // join values with commas
-							        // $.ajax({
-							        //     url: "https://api.github.com/repos/ashishjayamohan/create-conference/contents/entries.csv", // replace with your Github repository URL
-							        //     type: "POST",
-							        //     headers: {
-							        //         Authorization: "Token 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" // replace with your Github access token
-							        //     },
-							        //     data: JSON.stringify({
-							        //         message: "Add new entry", // commit message
-							        //         content: btoa(csv + "\n"), // encode CSV data as base64 and append newline character
-							        //         sha: "" // set to empty string for new file, or the SHA of the existing file to update it
-							        //     })
-							        // }).done(function(response) {
-							        //     console.log(response); // log response from Github API
-							        //     // TODO: add success message or redirect to thank-you page
-							        // }).fail(function(error) {
-							        //     console.log(error); // log error from Github API
-							        //     // TODO: add error message or alert
-							        // });
-								}
-							</script>
+							<iframe src="https://docs.google.com/forms/d/e/1FAIpQLSelyxQI-F4IhiRiW4tiFsjN5gFySvjq9cilOE_djtI1eeJBdA/viewform?embedded=true" width="90%" height="1100" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe>
 						</div>
 					</section>
 
